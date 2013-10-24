@@ -6,67 +6,51 @@
  *
  * Project Info:  http://www.datagenic.co.uk/fourthdimension/index.html
  *
- * This library is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU Lesser General Public License as published by 
- * the Free Software Foundation; either version 2.1 of the License, or 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License 
- * along with this library; if not, write to the Free Software Foundation, 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
  * in the United States and other countries.]
  *
  */
 package com.datagenic.fourthdimension.dates;
 
+public class Business extends Daily {
 
-public class Business extends Daily
-{
-   public static boolean[] BUSINESS_PATTERN = {
-   false,
-   true,
-   true,
-   true,
-   true,
-   true,
-   false
-   };
+	private static final long serialVersionUID = -451803511764629477L;
 
-   /**
-   @roseuid 414708AA02BF
-    */
-   public Business()
-   {
-       super(BUSINESS_PATTERN);
-   }
+	public static boolean[] BUSINESS_PATTERN = { false, true, true, true, true, true, false };
 
-   /**
-   @return java.lang.String
-   @roseuid 416505EC033C
-    */
-   public String getCalendarFrequencyName()
-   {
-       StringBuffer buffer = new StringBuffer();
-       for (int i=0;i<BUSINESS_PATTERN.length;i++) {
-           buffer.append(BUSINESS_PATTERN[i]);
-           buffer.append(" ");
-       }
-            return "Business(" + buffer.substring(0,buffer.length() - 1) + ")";
-   }
+	public Business() {
 
-   /**
-   @return Object
-   @roseuid 425E8B0D0049
-    */
-   public Object clone()
-   {
-       return new Business();
-   }
+		super(BUSINESS_PATTERN);
+	}
+
+	@Override
+	public String getCalendarFrequencyName() {
+
+		final StringBuffer buffer = new StringBuffer();
+		for (final boolean element : BUSINESS_PATTERN) {
+			buffer.append(element);
+			buffer.append(" ");
+		}
+		return "Business(" + buffer.substring(0, buffer.length() - 1) + ")";
+	}
+
+	@Override
+	public Object clone() {
+
+		return new Business();
+	}
 }

@@ -6,36 +6,34 @@
  *
  * Project Info:  http://www.datagenic.co.uk/fourthdimension/index.html
  *
- * This library is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU Lesser General Public License as published by 
- * the Free Software Foundation; either version 2.1 of the License, or 
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
  * License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License 
- * along with this library; if not, write to the Free Software Foundation, 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  *
- * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
+ * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
  * in the United States and other countries.]
  *
  */
 package com.datagenic.fourthdimension.dates;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
-import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import org.joda.time.DateTimeZone;
-import java.util.Iterator;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.TimeZone;
+
+import org.joda.time.DateTimeZone;
 
 /**
  * CalendarFrequency is the basis of all supported frequencies in Fourth
@@ -46,9 +44,9 @@ import java.util.Date;
  * graduated intervals, aligning to a particular frequency.
  */
 public abstract class CalendarFrequency implements Serializable {
-	
+
 	private static final long serialVersionUID = 1572646914411889138L;
-	
+
 	protected boolean[] pattern;
 	private SimpleDateFormat dateFormatter;
 	private TimeZone timezone = TimeZone.getDefault();
@@ -57,29 +55,9 @@ public abstract class CalendarFrequency implements Serializable {
 	// The name of the timezone property
 	public static final String TIMEZONE_PROPERTY = "timezone";
 
-	private VetoableChangeSupport vetoPropertyChangeSupport = new VetoableChangeSupport(
-			this);
-
-	public void addVetoPropertyChangeListener(VetoableChangeListener listener) {
-		vetoPropertyChangeSupport.addVetoableChangeListener(listener);
-	}
-
-	public void removeVetoPropertyChangeListener(VetoableChangeListener listener) {
-		vetoPropertyChangeSupport.removeVetoableChangeListener(listener);
-	}
-
-	public void removeAllVetoPropertyChangeListener() {
-		VetoableChangeListener[] listeners = vetoPropertyChangeSupport
-				.getVetoableChangeListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			vetoPropertyChangeSupport
-					.removeVetoableChangeListener(listeners[i]);
-		}
-	}
-
 	/**
 	 * Access method for the dateFormatter property.
-	 * 
+	 *
 	 * @return the current value of the dateFormatter property
 	 */
 	public SimpleDateFormat getDateFormatter() {
@@ -94,18 +72,18 @@ public abstract class CalendarFrequency implements Serializable {
 
 	/**
 	 * Sets the value of the dateFormatter property.
-	 * 
+	 *
 	 * @param aDateFormatter
 	 *            the new value of the dateFormatter property
 	 */
-	public void setDateFormatter(SimpleDateFormat aDateFormatter) {
+	public void setDateFormatter(final SimpleDateFormat aDateFormatter) {
 		dateFormatter = aDateFormatter;
 	}
 
 	/**
 	 * Provides an iterator of period indexes between a start and end index. The
 	 * indexes are inclusive. Note. The value returned in a Long value.
-	 * 
+	 *
 	 * @param startIndex -
 	 *            The starting index (inclusive)
 	 * @param endIndex -
@@ -113,15 +91,16 @@ public abstract class CalendarFrequency implements Serializable {
 	 * @return Iterator
 	 * @roseuid 4145996900DA
 	 */
-	public Iterator iterator(long startIndex, long endIndex) {
+	public Iterator<Long> iterator(final long startIndex, final long endIndex) {
 		final long[] indexes = this.getIndexes(startIndex, endIndex);
 
-		Iterator iterator = new Iterator() {
+		final Iterator<Long> iterator = new Iterator<Long>() {
 			int nextPosition = 0;
 
 			/**
 			 * remove
 			 */
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException(
 						"Elements cannot be removed from this iterator.");
@@ -129,23 +108,26 @@ public abstract class CalendarFrequency implements Serializable {
 
 			/**
 			 * hasNext
-			 * 
+			 *
 			 * @return boolean
 			 */
+			@Override
 			public boolean hasNext() {
 				return nextPosition < indexes.length;
 			}
 
 			/**
 			 * next
-			 * 
+			 *
 			 * @return Object
 			 */
-			public Object next() {
-				if (nextPosition >= indexes.length)
+			@Override
+			public Long next() {
+				if (nextPosition >= indexes.length) {
 					throw new java.util.NoSuchElementException(nextPosition
 							+ " > " + indexes.length);
-				Long value = new Long(indexes[nextPosition++]);
+				}
+				final Long value = new Long(indexes[nextPosition++]);
 				return value;
 			}
 
@@ -159,7 +141,7 @@ public abstract class CalendarFrequency implements Serializable {
 	 * e.g in a Business frequency, if the index equivalent of Sunday was
 	 * provided, it will return the previous Friday. If a Monday was specified,
 	 * it will return the Monday.
-	 * 
+	 *
 	 * @param index -
 	 *            The index period
 	 * @return long
@@ -176,13 +158,13 @@ public abstract class CalendarFrequency implements Serializable {
 	 * <p>
 	 * Note: Some frequencies may throw an UnsupportedOperationException in the
 	 * event they don't support this operation.
-	 * 
+	 *
 	 * @param index -
 	 *            The period index
 	 * @return java.util.Date
 	 * @roseuid 4157F4D200FA
 	 */
-	public Date startsOnBefore(Date index) {
+	public Date startsOnBefore(final Date index) {
 		throw new UnsupportedOperationException(
 				"Calendar indexes are not supported for this frequency.");
 	}
@@ -193,7 +175,7 @@ public abstract class CalendarFrequency implements Serializable {
 	 * e.g in a Business frequency, if the index equivalent of Sunday was
 	 * provided, it will return the following Monday. If a Monday was specified,
 	 * it will return the Tuesday.
-	 * 
+	 *
 	 * @param index
 	 * @return long
 	 * @roseuid 41459A69003E
@@ -209,25 +191,25 @@ public abstract class CalendarFrequency implements Serializable {
 	 * <p>
 	 * Note: Some frequencies may throw an UnsupportedOperationException in the
 	 * event they don't support this operation.
-	 * 
+	 *
 	 * @param index
 	 * @return java.util.Date
 	 * @roseuid 4157F4E7031C
 	 */
-	public Date startsAfter(Date index) {
+	public Date startsAfter(final Date index) {
 		throw new UnsupportedOperationException(
 				"Calendar indexes are not supported for this frequency.");
 	}
 
 	/**
 	 * Indicates whether the index period specified aligns to the calendar
-	 * 
+	 *
 	 * @param index -
 	 *            The period index
 	 * @return boolean
 	 * @roseuid 4151A37401C5
 	 */
-	public boolean aligns(long index) {
+	public boolean aligns(final long index) {
 		return startsOnBefore(index) == index;
 	}
 
@@ -235,21 +217,21 @@ public abstract class CalendarFrequency implements Serializable {
 	 * Indicates whether the index period specified aligns to the calendar Note:
 	 * Some frequency implementations may throw an UnsupportedOperationException
 	 * in the event this operatrion is not applicable for the frequency.
-	 * 
+	 *
 	 * @param index
 	 * @return boolean
 	 * @roseuid 4157F4FC02EE
 	 */
-	public boolean aligns(Date index) {
-		throw new UnsupportedOperationException(
-				"Calendar indexes are not supported for this frequency.");
+	public boolean aligns(final Date index) {
+
+		return aligns(index.getTime());
 	}
 
 	/**
 	 * Returns an array of period indexes between a start and end index
 	 * inclusive.
 	 * <p>
-	 * 
+	 *
 	 * @param startIndex
 	 * @param endIndex
 	 * @return long[]
@@ -266,14 +248,14 @@ public abstract class CalendarFrequency implements Serializable {
 	 * Note: Some frequency implementations may throw an
 	 * UnsupportedOperationException in the event this operatrion is not
 	 * applicable for the frequency.
-	 * 
+	 *
 	 * @param startIndex
 	 * @param endIndex
 	 * @return long[]
 	 * @throws com.datagenic.fourthdimension.dates.IndexAlignmentException
 	 * @roseuid 4157F50A029F
 	 */
-	public long[] getIndexes(Date startIndex, Date endIndex)
+	public long[] getIndexes(final Date startIndex, final Date endIndex)
 			throws IndexAlignmentException {
 		throw new UnsupportedOperationException(
 				"Calendar indexes are not supported for this frequency.");
@@ -286,7 +268,7 @@ public abstract class CalendarFrequency implements Serializable {
 	 * Note: Some frequency implementations may throw an
 	 * UnsupportedOperationException in the event this operatrion is not
 	 * applicable for the frequency.
-	 * 
+	 *
 	 * @param startIndex -
 	 *            The start index which is aligned to the calendar frequency
 	 * @param endIndex -
@@ -307,7 +289,7 @@ public abstract class CalendarFrequency implements Serializable {
 	 * Note: Some frequency implementations may throw an
 	 * UnsupportedOperationException in the event this operatrion is not
 	 * applicable for the frequency.
-	 * 
+	 *
 	 * @param startIndex -
 	 *            The start index which is aligned to the calendar frequency
 	 * @param endIndex -
@@ -316,7 +298,7 @@ public abstract class CalendarFrequency implements Serializable {
 	 * @throws com.datagenic.fourthdimension.dates.IndexAlignmentException
 	 * @roseuid 4157F51B005D
 	 */
-	public long periodsBetween(Date startIndex, Date endIndex)
+	public long periodsBetween(final Date startIndex, final Date endIndex)
 			throws IndexAlignmentException {
 		throw new UnsupportedOperationException(
 				"Calendar indexes are not supported for this frequency.");
@@ -326,21 +308,17 @@ public abstract class CalendarFrequency implements Serializable {
 	 * Specifies a boolean array that may be used in determining the periods of
 	 * a frequency. This boolean array may optional be used by the implementing
 	 * calendar frequency.
-	 * 
+	 *
 	 * @param pattern -
 	 *            A pattern of boolean values indicating valid or invalid
 	 *            periods.
 	 * @roseuid 4145A178030D
 	 */
-	public void setCalendarPattern(boolean[] pattern) {
+	public void setCalendarPattern(final boolean[] pattern) {
 		this.pattern = pattern;
 	}
 
-	/**
-	 * @param zone
-	 * @roseuid 4146B4140271
-	 */
-	public void setTimezone(TimeZone zone) {
+	public void setTimezone(final TimeZone zone) {
 		try {
 			// First give the listeners a chance to reject this change
 			vetoPropertyChangeSupport.fireVetoableChange(TIMEZONE_PROPERTY,
@@ -348,56 +326,46 @@ public abstract class CalendarFrequency implements Serializable {
 			timezone = zone;
 			jodaTimezone = DateTimeZone.forTimeZone(zone);
 
-		} catch (PropertyVetoException pve) {
+		} catch (final PropertyVetoException pve) {
 			pve.printStackTrace();
 		}
 
 	}
 
-	/**
-	 * @return java.util.TimeZone
-	 * @roseuid 414EA0FA002E
-	 */
 	public TimeZone getTimezone() {
 		return timezone;
 	}
 
-	/**
-	 * @return org.joda.time.DateTimeZone
-	 * @roseuid 425BE049004E
-	 */
 	public DateTimeZone getJodaTimezone() {
 		return jodaTimezone;
 	}
 
 	/**
 	 * Displays the name of the Calendar and if applicable the reference month.
-	 * 
+	 *
 	 * @return java.lang.String
 	 * @roseuid 4151B4B102DE
 	 */
 	public abstract String getCalendarFrequencyName();
 
-	/**
-	 * @param index
-	 * @param periods
-	 * @return long
-	 * @roseuid 4228773D038A
-	 */
 	public abstract long getPeriodFrom(long index, int periods);
 
-	/**
-	 * @return Object
-	 * @roseuid 425E8A290309
-	 */
+	@Override
 	public abstract Object clone();
 
-	public boolean equals(Object other) {
+	@Override
+	public boolean equals(final Object other) {
 
 		if (!(other instanceof CalendarFrequency)) {
 			return false;
 		}
 		return getCalendarFrequencyName().equals(
 				((CalendarFrequency) other).getCalendarFrequencyName());
+	}
+
+	@Override
+	public int hashCode() {
+
+		return getCalendarFrequencyName().hashCode();
 	}
 }
