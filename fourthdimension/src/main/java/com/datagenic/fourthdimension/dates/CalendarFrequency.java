@@ -26,7 +26,6 @@
  */
 package com.datagenic.fourthdimension.dates;
 
-import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,20 +35,22 @@ import java.util.TimeZone;
 import org.joda.time.DateTimeZone;
 
 /**
- * CalendarFrequency is the basis of all supported frequencies in Fourth
- * Dimension. If a new customised frequency is required then it must extend this
- * class.
+ * CalendarFrequency is the basis of all supported frequencies in Fourth Dimension. If a new customised frequency is
+ * required then it must extend this class.
  * <p>
- * The CalendarFrequency provides the logic required to produce a series at
- * graduated intervals, aligning to a particular frequency.
+ * The CalendarFrequency provides the logic required to produce a series at graduated intervals, aligning to a
+ * particular frequency.
  */
 public abstract class CalendarFrequency implements Serializable {
 
 	private static final long serialVersionUID = 1572646914411889138L;
 
 	protected boolean[] pattern;
+
 	private SimpleDateFormat dateFormatter;
+
 	private TimeZone timezone = TimeZone.getDefault();
+
 	private DateTimeZone jodaTimezone = DateTimeZone.forTimeZone(timezone);;
 
 	// The name of the timezone property
@@ -77,24 +78,27 @@ public abstract class CalendarFrequency implements Serializable {
 	 *            the new value of the dateFormatter property
 	 */
 	public void setDateFormatter(final SimpleDateFormat aDateFormatter) {
+
 		dateFormatter = aDateFormatter;
 	}
 
 	/**
-	 * Provides an iterator of period indexes between a start and end index. The
-	 * indexes are inclusive. Note. The value returned in a Long value.
+	 * Provides an iterator of period indexes between a start and end index. The indexes are inclusive. Note. The value
+	 * returned in a Long value.
 	 *
-	 * @param startIndex -
-	 *            The starting index (inclusive)
-	 * @param endIndex -
-	 *            The ending index (inclusive)
+	 * @param startIndex
+	 *            - The starting index (inclusive)
+	 * @param endIndex
+	 *            - The ending index (inclusive)
 	 * @return Iterator
 	 * @roseuid 4145996900DA
 	 */
 	public Iterator<Long> iterator(final long startIndex, final long endIndex) {
+
 		final long[] indexes = this.getIndexes(startIndex, endIndex);
 
 		final Iterator<Long> iterator = new Iterator<Long>() {
+
 			int nextPosition = 0;
 
 			/**
@@ -102,8 +106,8 @@ public abstract class CalendarFrequency implements Serializable {
 			 */
 			@Override
 			public void remove() {
-				throw new UnsupportedOperationException(
-						"Elements cannot be removed from this iterator.");
+
+				throw new UnsupportedOperationException("Elements cannot be removed from this iterator.");
 			}
 
 			/**
@@ -113,6 +117,7 @@ public abstract class CalendarFrequency implements Serializable {
 			 */
 			@Override
 			public boolean hasNext() {
+
 				return nextPosition < indexes.length;
 			}
 
@@ -123,9 +128,9 @@ public abstract class CalendarFrequency implements Serializable {
 			 */
 			@Override
 			public Long next() {
+
 				if (nextPosition >= indexes.length) {
-					throw new java.util.NoSuchElementException(nextPosition
-							+ " > " + indexes.length);
+					throw new java.util.NoSuchElementException(nextPosition + " > " + indexes.length);
 				}
 				final Long value = new Long(indexes[nextPosition++]);
 				return value;
@@ -138,12 +143,11 @@ public abstract class CalendarFrequency implements Serializable {
 	/**
 	 * Provides an index which starts on or before the specified index.
 	 * <p>
-	 * e.g in a Business frequency, if the index equivalent of Sunday was
-	 * provided, it will return the previous Friday. If a Monday was specified,
-	 * it will return the Monday.
+	 * e.g in a Business frequency, if the index equivalent of Sunday was provided, it will return the previous Friday.
+	 * If a Monday was specified, it will return the Monday.
 	 *
-	 * @param index -
-	 *            The index period
+	 * @param index
+	 *            - The index period
 	 * @return long
 	 * @roseuid 41459A4002DE
 	 */
@@ -152,29 +156,26 @@ public abstract class CalendarFrequency implements Serializable {
 	/**
 	 * Provides an index which starts on or before the specified index.
 	 * <p>
-	 * e.g in a Business frequency, if the index equivalent of Sunday was
-	 * provided, it will return the previous Friday. If a Monday was specified,
-	 * it will return the Monday.
+	 * e.g in a Business frequency, if the index equivalent of Sunday was provided, it will return the previous Friday.
+	 * If a Monday was specified, it will return the Monday.
 	 * <p>
-	 * Note: Some frequencies may throw an UnsupportedOperationException in the
-	 * event they don't support this operation.
+	 * Note: Some frequencies may throw an UnsupportedOperationException in the event they don't support this operation.
 	 *
-	 * @param index -
-	 *            The period index
+	 * @param index
+	 *            - The period index
 	 * @return java.util.Date
 	 * @roseuid 4157F4D200FA
 	 */
 	public Date startsOnBefore(final Date index) {
-		throw new UnsupportedOperationException(
-				"Calendar indexes are not supported for this frequency.");
+
+		throw new UnsupportedOperationException("Calendar indexes are not supported for this frequency.");
 	}
 
 	/**
 	 * Provides an index which starts after the specified index.
 	 * <p>
-	 * e.g in a Business frequency, if the index equivalent of Sunday was
-	 * provided, it will return the following Monday. If a Monday was specified,
-	 * it will return the Tuesday.
+	 * e.g in a Business frequency, if the index equivalent of Sunday was provided, it will return the following Monday.
+	 * If a Monday was specified, it will return the Tuesday.
 	 *
 	 * @param index
 	 * @return long
@@ -185,38 +186,36 @@ public abstract class CalendarFrequency implements Serializable {
 	/**
 	 * Provides an index which starts after the specified index.
 	 * <p>
-	 * e.g in a Business frequency, if the index equivalent of Sunday was
-	 * provided, it will return the following Monday. If a Monday was specified,
-	 * it will return the Tuesday.
+	 * e.g in a Business frequency, if the index equivalent of Sunday was provided, it will return the following Monday.
+	 * If a Monday was specified, it will return the Tuesday.
 	 * <p>
-	 * Note: Some frequencies may throw an UnsupportedOperationException in the
-	 * event they don't support this operation.
+	 * Note: Some frequencies may throw an UnsupportedOperationException in the event they don't support this operation.
 	 *
 	 * @param index
 	 * @return java.util.Date
 	 * @roseuid 4157F4E7031C
 	 */
 	public Date startsAfter(final Date index) {
-		throw new UnsupportedOperationException(
-				"Calendar indexes are not supported for this frequency.");
+
+		throw new UnsupportedOperationException("Calendar indexes are not supported for this frequency.");
 	}
 
 	/**
 	 * Indicates whether the index period specified aligns to the calendar
 	 *
-	 * @param index -
-	 *            The period index
+	 * @param index
+	 *            - The period index
 	 * @return boolean
 	 * @roseuid 4151A37401C5
 	 */
 	public boolean aligns(final long index) {
+
 		return startsOnBefore(index) == index;
 	}
 
 	/**
-	 * Indicates whether the index period specified aligns to the calendar Note:
-	 * Some frequency implementations may throw an UnsupportedOperationException
-	 * in the event this operatrion is not applicable for the frequency.
+	 * Indicates whether the index period specified aligns to the calendar Note: Some frequency implementations may
+	 * throw an UnsupportedOperationException in the event this operatrion is not applicable for the frequency.
 	 *
 	 * @param index
 	 * @return boolean
@@ -228,8 +227,7 @@ public abstract class CalendarFrequency implements Serializable {
 	}
 
 	/**
-	 * Returns an array of period indexes between a start and end index
-	 * inclusive.
+	 * Returns an array of period indexes between a start and end index inclusive.
 	 * <p>
 	 *
 	 * @param startIndex
@@ -238,16 +236,13 @@ public abstract class CalendarFrequency implements Serializable {
 	 * @throws com.datagenic.fourthdimension.dates.IndexAlignmentException
 	 * @roseuid 41459A860177
 	 */
-	public abstract long[] getIndexes(long startIndex, long endIndex)
-			throws IndexAlignmentException;
+	public abstract long[] getIndexes(long startIndex, long endIndex) throws IndexAlignmentException;
 
 	/**
-	 * Returns an array of period indexes between a start and end index
-	 * inclusive.
+	 * Returns an array of period indexes between a start and end index inclusive.
 	 * <p>
-	 * Note: Some frequency implementations may throw an
-	 * UnsupportedOperationException in the event this operatrion is not
-	 * applicable for the frequency.
+	 * Note: Some frequency implementations may throw an UnsupportedOperationException in the event this operatrion is
+	 * not applicable for the frequency.
 	 *
 	 * @param startIndex
 	 * @param endIndex
@@ -255,88 +250,76 @@ public abstract class CalendarFrequency implements Serializable {
 	 * @throws com.datagenic.fourthdimension.dates.IndexAlignmentException
 	 * @roseuid 4157F50A029F
 	 */
-	public long[] getIndexes(final Date startIndex, final Date endIndex)
-			throws IndexAlignmentException {
-		throw new UnsupportedOperationException(
-				"Calendar indexes are not supported for this frequency.");
+	public long[] getIndexes(final Date startIndex, final Date endIndex) throws IndexAlignmentException {
+
+		throw new UnsupportedOperationException("Calendar indexes are not supported for this frequency.");
 	}
 
 	/**
-	 * Indicates the number of periods at the calendar frequency which lie
-	 * between the start and end index. It is not inclusive of the end index.
+	 * Indicates the number of periods at the calendar frequency which lie between the start and end index. It is not
+	 * inclusive of the end index.
 	 * <p>
-	 * Note: Some frequency implementations may throw an
-	 * UnsupportedOperationException in the event this operatrion is not
-	 * applicable for the frequency.
+	 * Note: Some frequency implementations may throw an UnsupportedOperationException in the event this operatrion is
+	 * not applicable for the frequency.
 	 *
-	 * @param startIndex -
-	 *            The start index which is aligned to the calendar frequency
-	 * @param endIndex -
-	 *            The end index which is aligned to the calendar frequency,
-	 *            which designates the start of the next period. Note the end
-	 *            index is not excluded in the number of indexes.
+	 * @param startIndex
+	 *            - The start index which is aligned to the calendar frequency
+	 * @param endIndex
+	 *            - The end index which is aligned to the calendar frequency, which designates the start of the next
+	 *            period. Note the end index is not excluded in the number of indexes.
 	 * @return long
 	 * @throws com.datagenic.fourthdimension.dates.IndexAlignmentException
 	 * @roseuid 415171490222
 	 */
-	public abstract long periodsBetween(long startIndex, long endIndex)
-			throws IndexAlignmentException;
+	public abstract long periodsBetween(long startIndex, long endIndex) throws IndexAlignmentException;
 
 	/**
-	 * Indicates the number of periods at the calendar frequency which lie
-	 * between the start and end index. It is not inclusive of the end index.
+	 * Indicates the number of periods at the calendar frequency which lie between the start and end index. It is not
+	 * inclusive of the end index.
 	 * <p>
-	 * Note: Some frequency implementations may throw an
-	 * UnsupportedOperationException in the event this operatrion is not
-	 * applicable for the frequency.
+	 * Note: Some frequency implementations may throw an UnsupportedOperationException in the event this operatrion is
+	 * not applicable for the frequency.
 	 *
-	 * @param startIndex -
-	 *            The start index which is aligned to the calendar frequency
-	 * @param endIndex -
-	 *            The end index which is aligned to the calendar frequency
+	 * @param startIndex
+	 *            - The start index which is aligned to the calendar frequency
+	 * @param endIndex
+	 *            - The end index which is aligned to the calendar frequency
 	 * @return long
 	 * @throws com.datagenic.fourthdimension.dates.IndexAlignmentException
 	 * @roseuid 4157F51B005D
 	 */
-	public long periodsBetween(final Date startIndex, final Date endIndex)
-			throws IndexAlignmentException {
-		throw new UnsupportedOperationException(
-				"Calendar indexes are not supported for this frequency.");
+	public long periodsBetween(final Date startIndex, final Date endIndex) throws IndexAlignmentException {
+
+		throw new UnsupportedOperationException("Calendar indexes are not supported for this frequency.");
 	}
 
 	/**
-	 * Specifies a boolean array that may be used in determining the periods of
-	 * a frequency. This boolean array may optional be used by the implementing
-	 * calendar frequency.
+	 * Specifies a boolean array that may be used in determining the periods of a frequency. This boolean array may
+	 * optional be used by the implementing calendar frequency.
 	 *
-	 * @param pattern -
-	 *            A pattern of boolean values indicating valid or invalid
-	 *            periods.
+	 * @param pattern
+	 *            - A pattern of boolean values indicating valid or invalid periods.
 	 * @roseuid 4145A178030D
 	 */
 	public void setCalendarPattern(final boolean[] pattern) {
+
 		this.pattern = pattern;
 	}
 
 	public void setTimezone(final TimeZone zone) {
-		try {
-			// First give the listeners a chance to reject this change
-			vetoPropertyChangeSupport.fireVetoableChange(TIMEZONE_PROPERTY,
-					timezone, zone);
-			timezone = zone;
-			jodaTimezone = DateTimeZone.forTimeZone(zone);
 
-		} catch (final PropertyVetoException pve) {
-			pve.printStackTrace();
-		}
+		timezone = zone;
+		jodaTimezone = DateTimeZone.forTimeZone(zone);
 
 	}
 
 	public TimeZone getTimezone() {
+
 		return timezone;
 	}
 
 	public DateTimeZone getJodaTimezone() {
+
 		return jodaTimezone;
 	}
 
@@ -359,8 +342,7 @@ public abstract class CalendarFrequency implements Serializable {
 		if (!(other instanceof CalendarFrequency)) {
 			return false;
 		}
-		return getCalendarFrequencyName().equals(
-				((CalendarFrequency) other).getCalendarFrequencyName());
+		return getCalendarFrequencyName().equals(((CalendarFrequency) other).getCalendarFrequencyName());
 	}
 
 	@Override

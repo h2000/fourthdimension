@@ -4,6 +4,5 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/joda-time/joda-time/2.2/joda-time-2.2.jar" sourcepath="M2_REPO/joda-time/joda-time/2.2/joda-time-2.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-primitives-1.1-dev.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
